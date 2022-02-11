@@ -24,6 +24,30 @@ public class GameManager : MonoBehaviour
         NewGame();
     }
 
+    private void Update()
+    {
+        if (Input.GetMouseButtonDown(1)) // flagging
+        {
+            Flag();
+        }
+    }
+
+    private void Flag() // places flag on cell if it is valid and unrevealed
+    {
+        Vector3 worldPosition = Camera.main.ScreenToWorldPoint(Input.mousePosition); // mouse position converted to world space position
+        Vector3Int cellPosition = board.tilemap.WorldToCell(worldPosition); // world space position to tilemap/cell position
+        Cell cell = GetCell(cellPosition.x, cellPosition.y);
+
+        if (cell.type == Cell.Type.Invalid || cell.revealed)
+        {
+            return;
+        }
+
+        cell.flagged = !cell.flagged;
+        state[cellPosition.x, cellPosition.y] = cell;
+        board.Draw(state);
+    }
+
     private void NewGame()
     {
         state = new Cell[width, height];
@@ -118,12 +142,7 @@ public class GameManager : MonoBehaviour
                 int x = cellX + adjacentX;
                 int y = cellY + adjacentY;
 
-                if (x < 0 || x >= width || y < 0 || y >= height) // out of bounds
-                {
-                    continue;
-                }
-
-                if (state[x, y].type == Cell.Type.Mine)
+                if (GetCell(x, y).type == Cell.Type.Mine)
                 {
                     count++;
                 }
@@ -131,5 +150,22 @@ public class GameManager : MonoBehaviour
         }
 
         return count;
+    }
+
+    private Cell GetCell(int x, int y) // returns corresponding cell if valid, otherwise returns new cell with invalid type
+    {
+        if (IsValid(x, y))
+        {
+            return state[x, y];
+        }
+        else
+        {
+            return new Cell();
+        }
+    }
+
+    private bool IsValid(int x, int y) // checks if cell is valid
+    {
+        return x >= 0 && x < width && y >= 0 && y < height;
     }
 }
