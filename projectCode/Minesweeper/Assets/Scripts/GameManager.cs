@@ -8,6 +8,8 @@ public class GameManager : MonoBehaviour
     private int width = 16;
     [SerializeField]
     private int height = 16;
+    [SerializeField]
+    private int mineCount = 32;
 
     private Board board;
     private Cell[,] state;
@@ -27,6 +29,7 @@ public class GameManager : MonoBehaviour
         state = new Cell[width, height];
 
         GenerateCells();
+        GenerateMines();
 
         Camera.main.transform.position = new Vector3(width / 2f, height / 2f, -10); // making sure camera is in middle of board
         board.Draw(state);
@@ -43,6 +46,33 @@ public class GameManager : MonoBehaviour
                 cell.type = Cell.Type.Empty;
                 state[x, y] = cell;
             }
+        }
+    }
+
+    private void GenerateMines()
+    {
+        for (int i = 0; i < mineCount; i++)
+        {
+            int x = Random.Range(0, width);
+            int y = Random.Range(0, height);
+
+            while (state[x, y].type == Cell.Type.Mine) // Loop makes sure we don't place a mine on a tile twice
+            {
+                x++;
+
+                if (x >= width)
+                {
+                    x = 0;
+                    y++;
+
+                    if (y >= height)
+                    {
+                        y = 0;
+                    }
+                }
+            }
+
+            state[x, y].type = Cell.Type.Mine;
         }
     }
 }
