@@ -13,6 +13,7 @@ public class GameManager : MonoBehaviour
 
     private Board board;
     private Cell[,] state;
+    private bool gameOver;
 
     private void Awake()
     {
@@ -26,13 +27,16 @@ public class GameManager : MonoBehaviour
 
     private void Update()
     {
-        if (Input.GetMouseButtonDown(1)) // flagging
+        if (!gameOver)
         {
-            Flag();
-        }
-        else if (Input.GetMouseButtonDown(0)) // revealing
-        {
-            Reveal();
+            if (Input.GetMouseButtonDown(1)) // flagging
+            {
+                Flag();
+            }
+            else if (Input.GetMouseButtonDown(0)) // revealing
+            {
+                Reveal();
+            }
         }
     }
 
@@ -63,13 +67,20 @@ public class GameManager : MonoBehaviour
             return;
         }
 
-        if (cell.type == Cell.Type.Empty) // if cell is empty, start flooding
+        switch (cell.type)
         {
-            Flood(cell);
+            case Cell.Type.Mine: // if bomb tile, explode
+                Explode(cell);
+                break;
+            case Cell.Type.Empty: // if empty tile, start flooding
+                Flood(cell);
+                break;
+            default:
+                cell.revealed = true;
+                state[cellPosition.x, cellPosition.y] = cell;
+                break;
         }
 
-        cell.revealed = true;
-        state[cellPosition.x, cellPosition.y] = cell;
         board.Draw(state);
     }
 
@@ -92,9 +103,33 @@ public class GameManager : MonoBehaviour
         }
     }
 
+    private void Explode(Cell cell) // called when bomb tile is flipped
+    {
+        gameOver = true;
+
+        cell.revealed = true;
+        cell.exploded = true;
+        state[cell.position.x, cell.position.y] = cell;
+
+        for (int x = 0; x < width; x++) // loop through and reveal all mine tiles on board
+        {
+            for (int y = 0; y < height; y++)
+            {
+                cell = state[x, y];
+
+                if (cell.type == Cell.Type.Mine)
+                {
+                    cell.revealed = true;
+                    state[x, y] = cell;
+                }
+            }
+        }
+    }
+
     private void NewGame()
     {
         state = new Cell[width, height];
+        gameOver = false;
 
         GenerateCells();
         GenerateMines();
