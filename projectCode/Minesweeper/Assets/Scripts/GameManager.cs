@@ -15,6 +15,11 @@ public class GameManager : MonoBehaviour
     private Cell[,] state;
     private bool gameOver;
 
+    private void OnValidate()
+    {
+        mineCount = Mathf.Clamp(mineCount, 0, width * height); // makes sure we don't accidentally choose more mines than slots on board
+    }
+
     private void Awake()
     {
         board = GetComponentInChildren<Board>();
@@ -27,6 +32,11 @@ public class GameManager : MonoBehaviour
 
     private void Update()
     {
+        if (Input.GetKeyDown(KeyCode.R))
+        {
+            NewGame();
+        }
+
         if (!gameOver)
         {
             if (Input.GetMouseButtonDown(1)) // flagging
@@ -74,10 +84,12 @@ public class GameManager : MonoBehaviour
                 break;
             case Cell.Type.Empty: // if empty tile, start flooding
                 Flood(cell);
+                CheckWinCondition();
                 break;
             default:
                 cell.revealed = true;
                 state[cellPosition.x, cellPosition.y] = cell;
+                CheckWinCondition();
                 break;
         }
 
@@ -120,6 +132,38 @@ public class GameManager : MonoBehaviour
                 if (cell.type == Cell.Type.Mine)
                 {
                     cell.revealed = true;
+                    state[x, y] = cell;
+                }
+            }
+        }
+    }
+
+    private void CheckWinCondition()
+    {
+        for (int x = 0; x < width; x++) // check each non-mine tile and see if its flipped
+        {
+            for (int y = 0; y < height; y++)
+            {
+                Cell cell = state[x, y];
+
+                if (cell.type != Cell.Type.Mine && !cell.revealed) // unrevealed non-mine tile
+                {
+                    return;
+                }
+            }
+        }
+
+        gameOver = true;
+
+        for (int x = 0; x < width; x++) // loop through and flag all mine tiles on board
+        {
+            for (int y = 0; y < height; y++)
+            {
+                Cell cell = state[x, y];
+
+                if (cell.type == Cell.Type.Mine)
+                {
+                    cell.flagged = true;
                     state[x, y] = cell;
                 }
             }
