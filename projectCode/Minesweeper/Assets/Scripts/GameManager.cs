@@ -122,10 +122,15 @@ public class GameManager : MonoBehaviour
 
         if (cell.type == Cell.Type.Empty) // continue flooding if cell empty
         {
-            Flood(GetCell(cell.position.x - 1, cell.position.y));
-            Flood(GetCell(cell.position.x + 1, cell.position.y));
-            Flood(GetCell(cell.position.x, cell.position.y - 1));
-            Flood(GetCell(cell.position.x, cell.position.y + 1));
+            Flood(GetCell(cell.position.x - 1, cell.position.y)); // left
+            Flood(GetCell(cell.position.x + 1, cell.position.y)); // right
+            Flood(GetCell(cell.position.x, cell.position.y - 1)); // down
+            Flood(GetCell(cell.position.x, cell.position.y + 1)); // up
+
+            Flood(GetCell(cell.position.x - 1, cell.position.y - 1)); // bottom left
+            Flood(GetCell(cell.position.x + 1, cell.position.y - 1)); // bottom right
+            Flood(GetCell(cell.position.x - 1, cell.position.y + 1)); // top left
+            Flood(GetCell(cell.position.x + 1, cell.position.y + 1)); // top right
         }
     }
 
