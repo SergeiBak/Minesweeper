@@ -15,6 +15,8 @@ public class GameManager : MonoBehaviour
     private Cell[,] state;
     private bool gameOver;
 
+    private bool firstClick = true;
+
     private void OnValidate()
     {
         mineCount = Mathf.Clamp(mineCount, 0, width * height); // makes sure we don't accidentally choose more mines than slots on board
@@ -45,6 +47,18 @@ public class GameManager : MonoBehaviour
             }
             else if (Input.GetMouseButtonDown(0)) // revealing
             {
+                if (firstClick)
+                {
+                    firstClick = false;
+
+                    Vector3 worldPosition = Camera.main.ScreenToWorldPoint(Input.mousePosition); // mouse position converted to world space position
+                    Vector3Int cellPosition = board.tilemap.WorldToCell(worldPosition); // world space position to tilemap/cell position
+                    Cell cell = GetCell(cellPosition.x, cellPosition.y);
+
+                    GenerateMines(cell);
+                    GenerateNumbers();
+                }
+
                 Reveal();
             }
         }
@@ -176,8 +190,10 @@ public class GameManager : MonoBehaviour
         gameOver = false;
 
         GenerateCells();
-        GenerateMines();
-        GenerateNumbers();
+        // GenerateMines();
+        // GenerateNumbers();
+
+        firstClick = true;
 
         Camera.main.transform.position = new Vector3(width / 2f, height / 2f, -10); // making sure camera is in middle of board
         board.Draw(state);
@@ -197,14 +213,14 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    private void GenerateMines() // places mines onto board
+    private void GenerateMines(Cell cell) // places mines onto board
     {
         for (int i = 0; i < mineCount; i++)
         {
             int x = Random.Range(0, width);
             int y = Random.Range(0, height);
 
-            while (state[x, y].type == Cell.Type.Mine) // Loop makes sure we don't place a mine on a tile twice
+            while (state[x, y].type == Cell.Type.Mine || InStartRange(cell, state[x, y])) // Loop makes sure we don't place a mine on a tile twice
             {
                 x++;
 
@@ -222,6 +238,24 @@ public class GameManager : MonoBehaviour
 
             state[x, y].type = Cell.Type.Mine;
         }
+    }
+
+    private bool InStartRange(Cell startCell, Cell checkCell) // makes sure first tile user flips is a empty cell
+    {
+        if (checkCell.position == startCell.position 
+            || checkCell.position == GetCell(startCell.position.x - 1, startCell.position.y).position 
+            || checkCell.position == GetCell(startCell.position.x + 1, startCell.position.y).position
+            || checkCell.position == GetCell(startCell.position.x, startCell.position.y - 1).position
+            || checkCell.position == GetCell(startCell.position.x, startCell.position.y + 1).position
+            || checkCell.position == GetCell(startCell.position.x + 1, startCell.position.y + 1).position
+            || checkCell.position == GetCell(startCell.position.x + 1, startCell.position.y - 1).position
+            || checkCell.position == GetCell(startCell.position.x - 1, startCell.position.y + 1).position
+            || checkCell.position == GetCell(startCell.position.x - 1, startCell.position.y - 1).position)
+        {
+            return true;
+        }
+
+        return false;
     }
 
     private void GenerateNumbers() // sets count of cell to number of mines surrounding it
