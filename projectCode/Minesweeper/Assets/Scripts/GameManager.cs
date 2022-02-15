@@ -281,9 +281,15 @@ public class GameManager : MonoBehaviour
 
         firstClick = true;
 
-        Camera.main.transform.position = new Vector3(width / 2f, height / 2f, -10); // making sure camera is in middle of board
+        SetupCamera();
         SetupBackground();
         board.Draw(state);
+    }
+
+    private void SetupCamera()
+    {
+        Camera.main.transform.position = new Vector3(width / 2f, (height / 2f) + ((height / 15f) * (height / 15f)), -10); // making sure camera is in middle of board
+        Camera.main.orthographicSize = height * (10f / 16f);
     }
 
     private void SetupBackground()
