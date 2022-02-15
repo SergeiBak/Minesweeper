@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class GameManager : MonoBehaviour
 {
@@ -16,6 +17,18 @@ public class GameManager : MonoBehaviour
     [SerializeField]
     private GameObject background;
 
+    [SerializeField]
+    private GameObject mineCounterBG;
+    [SerializeField]
+    private RectTransform mineCounter;
+
+    [SerializeField]
+    private GameObject timerBG;
+    [SerializeField]
+    private RectTransform timerCounter;
+
+    private RectTransform canvasRectT;
+
     private Board board;
     private Cell[,] state;
     private bool gameOver;
@@ -30,6 +43,8 @@ public class GameManager : MonoBehaviour
     private void Awake()
     {
         board = GetComponentInChildren<Board>();
+
+        canvasRectT = FindObjectOfType<Canvas>().GetComponent<RectTransform>();
     }
 
     private void Start()
@@ -283,19 +298,64 @@ public class GameManager : MonoBehaviour
 
         SetupCamera();
         SetupBackground();
+        SetupUI();
         board.Draw(state);
     }
 
     private void SetupCamera()
     {
         Camera.main.transform.position = new Vector3(width / 2f, (height / 2f) + ((height / 15f) * (height / 15f)), -10); // making sure camera is in middle of board
-        Camera.main.orthographicSize = height * (10f / 16f);
+        
+        if (height < 10)
+        {
+            Camera.main.orthographicSize = height * (10f / 16f) + 0.5f;
+        }
+        else
+        {
+            Camera.main.orthographicSize = height * (10f / 16f);
+        }
     }
 
     private void SetupBackground()
     {
         background.transform.position = new Vector3(width / 2f, height / 2f, 0f); // making sure background is aligned with board
         background.transform.localScale = new Vector3(width + (borderThickness * 2), height + (borderThickness * 2), 1);
+    }
+
+    private void SetupUI()
+    {
+        SetupMineCounter();
+        SetupTimeCounter();
+    }
+
+    private void SetupMineCounter()
+    {
+        // setup position
+        mineCounterBG.transform.position = new Vector3(0 + (mineCounterBG.transform.lossyScale.x / 2f), height + (mineCounterBG.transform.lossyScale.y / 2f) + borderThickness, 0f);
+
+        Vector2 mineCounterBGPos = mineCounterBG.transform.position;
+        Vector2 screenPoint = Camera.main.WorldToViewportPoint(mineCounterBGPos);
+        Vector2 WorldObject_ScreenPosition = new Vector2(((screenPoint.x * canvasRectT.sizeDelta.x) - (canvasRectT.sizeDelta.x * 0.5f)), ((screenPoint.y * canvasRectT.sizeDelta.y) - (canvasRectT.sizeDelta.y * 0.5f)));
+        
+        mineCounter.anchoredPosition = WorldObject_ScreenPosition;
+
+        // setup scale
+        mineCounter.localScale = new Vector3((1f / height) * 16f, (1f / height) * 16f, 1);
+    }
+
+    private void SetupTimeCounter()
+    {
+        // setup position
+        timerBG.transform.position = new Vector3(width - (timerBG.transform.lossyScale.x / 2f), height + (timerBG.transform.lossyScale.y / 2f) + borderThickness, 0f);
+
+        Vector2 timeCounterBGPos = timerBG.transform.position;
+        Vector2 screenPoint = Camera.main.WorldToViewportPoint(timeCounterBGPos);
+        Vector2 WorldObject_ScreenPosition = new Vector2(((screenPoint.x * canvasRectT.sizeDelta.x) - (canvasRectT.sizeDelta.x * 0.5f)), ((screenPoint.y * canvasRectT.sizeDelta.y) - (canvasRectT.sizeDelta.y * 0.5f)));
+
+        timerCounter.anchoredPosition = WorldObject_ScreenPosition;
+
+        // setup scale
+        timerCounter.localScale = new Vector3((1f / height) * 16f, (1f / height) * 16f, 1);
     }
 
     private void GenerateCells() // Sets all cells in range to empty
