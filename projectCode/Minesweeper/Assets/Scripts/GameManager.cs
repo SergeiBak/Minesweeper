@@ -11,6 +11,11 @@ public class GameManager : MonoBehaviour
     [SerializeField]
     private int mineCount = 32;
 
+    [SerializeField]
+    private float borderThickness = 0.5f;
+    [SerializeField]
+    private GameObject background;
+
     private Board board;
     private Cell[,] state;
     private bool gameOver;
@@ -277,7 +282,14 @@ public class GameManager : MonoBehaviour
         firstClick = true;
 
         Camera.main.transform.position = new Vector3(width / 2f, height / 2f, -10); // making sure camera is in middle of board
+        SetupBackground();
         board.Draw(state);
+    }
+
+    private void SetupBackground()
+    {
+        background.transform.position = new Vector3(width / 2f, height / 2f, 0f); // making sure background is aligned with board
+        background.transform.localScale = new Vector3(width + (borderThickness * 2), height + (borderThickness * 2), 1);
     }
 
     private void GenerateCells() // Sets all cells in range to empty
