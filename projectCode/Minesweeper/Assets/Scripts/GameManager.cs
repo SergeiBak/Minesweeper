@@ -61,6 +61,82 @@ public class GameManager : MonoBehaviour
 
                 Reveal();
             }
+            else if (Input.GetMouseButtonDown(2)) // reveal all tiles around number tile if equal number of mines are flagged
+            {
+                AutoFillSurroundingCells();
+            }
+        }
+    }
+
+    private void AutoFillSurroundingCells()
+    {
+        Vector3 worldPosition = Camera.main.ScreenToWorldPoint(Input.mousePosition); // mouse position converted to world space position
+        Vector3Int cellPosition = board.tilemap.WorldToCell(worldPosition); // world space position to tilemap/cell position
+        Cell cell = GetCell(cellPosition.x, cellPosition.y);
+
+        if (cell.type != Cell.Type.Number || !cell.revealed) // cell must be a revealed number to check outer cells
+        {
+            return;
+        }
+
+        CheckSurroundingCells(cell);
+    }
+
+    private void CheckSurroundingCells(Cell cell)
+    {
+        if (!AnyCellsUnrevealed(cell.position.x, cell.position.y)) // if all surrounding cells are already revealed, no point in checking and flipping
+        {
+            return;
+        }
+
+        if (CountMines(cell.position.x, cell.position.y) != CountFlags(cell.position.x, cell.position.y)) // slots flagged not equal to number of hidden mines
+        {
+            return;
+        }
+
+        RevealSurroundingCells(cell.position.x, cell.position.y);
+    }
+
+    private void RevealSurroundingCells(int cellX, int cellY)
+    {
+        for (int adjacentX = -1; adjacentX <= 1; adjacentX++)
+        {
+            for (int adjacentY = -1; adjacentY <= 1; adjacentY++)
+            {
+                if (adjacentX == 0 && adjacentY == 0) // current cell being checked, we skip
+                {
+                    continue;
+                }
+
+                int x = cellX + adjacentX;
+                int y = cellY + adjacentY;
+
+                Cell currentCell = GetCell(x, y);
+
+
+                if (currentCell.type == Cell.Type.Invalid || currentCell.revealed || currentCell.flagged)
+                {
+                    continue;
+                }
+
+                switch (currentCell.type)
+                {
+                    case Cell.Type.Mine: // if bomb tile, explode
+                        Explode(currentCell);
+                        break;
+                    case Cell.Type.Empty: // if empty tile, start flooding
+                        Flood(currentCell);
+                        CheckWinCondition();
+                        break;
+                    default:
+                        currentCell.revealed = true;
+                        state[x, y] = currentCell;
+                        CheckWinCondition();
+                        break;
+                }
+
+                board.Draw(state);
+            }
         }
     }
 
@@ -312,6 +388,56 @@ public class GameManager : MonoBehaviour
         }
 
         return count;
+    }
+
+    private int CountFlags(int cellX, int cellY) // returns the number of flags surrounding cell
+    {
+        int count = 0;
+
+        for (int adjacentX = -1; adjacentX <= 1; adjacentX++)
+        {
+            for (int adjacentY = -1; adjacentY <= 1; adjacentY++)
+            {
+                if (adjacentX == 0 && adjacentY == 0) // current cell being checked, we skip
+                {
+                    continue;
+                }
+
+                int x = cellX + adjacentX;
+                int y = cellY + adjacentY;
+
+                if (GetCell(x, y).flagged == true)
+                {
+                    count++;
+                }
+            }
+        }
+
+        return count;
+    }
+
+    private bool AnyCellsUnrevealed(int cellX, int cellY) // returns true if there is a surrounding unrevealed cell
+    {
+        for (int adjacentX = -1; adjacentX <= 1; adjacentX++)
+        {
+            for (int adjacentY = -1; adjacentY <= 1; adjacentY++)
+            {
+                if (adjacentX == 0 && adjacentY == 0) // current cell being checked, we skip
+                {
+                    continue;
+                }
+
+                int x = cellX + adjacentX;
+                int y = cellY + adjacentY;
+
+                if (GetCell(x, y).revealed == false && !GetCell(x, y).flagged)
+                {
+                    return true;
+                }
+            }
+        }
+
+        return false;
     }
 
     private Cell GetCell(int x, int y) // returns corresponding cell if valid, otherwise returns new cell with invalid type
