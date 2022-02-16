@@ -17,6 +17,29 @@ public class MenuManager : MonoBehaviour
     [SerializeField]
     private GameObject confirmationPanel;
 
+    [SerializeField]
+    private Text beginnerTime;
+    [SerializeField]
+    private Text standardTime;
+    [SerializeField]
+    private Text advancedTime;
+
+    private int customWidth = 16;
+    private int customHeight = 16;
+    private int customMines = 40;
+
+    [SerializeField]
+    private Text widthLabel;
+    [SerializeField]
+    private Text heightLabel;
+    [SerializeField]
+    private Text minesLabel;
+
+    [SerializeField]
+    private Slider minesSlider;
+    [SerializeField]
+    private Text maxMinesText;
+
     private void Start()
     {
         EnableHomePanel();
@@ -65,9 +88,86 @@ public class MenuManager : MonoBehaviour
         SceneManager.LoadScene("GameScene");
     }
 
+    public void PlayBeginner()
+    {
+        PlayerPrefs.SetInt("MinesweeperGameMode", 1);
+
+        PlayerPrefs.SetInt("MinesweeperWidth", 9);
+        PlayerPrefs.SetInt("MinesweeperHeight", 9);
+        PlayerPrefs.SetInt("MinesweeperMines", 10);
+
+        Play();
+    }
+
+    public void PlayStandard()
+    {
+        PlayerPrefs.SetInt("MinesweeperGameMode", 2);
+
+        PlayerPrefs.SetInt("MinesweeperWidth", 16);
+        PlayerPrefs.SetInt("MinesweeperHeight", 16);
+        PlayerPrefs.SetInt("MinesweeperMines", 40);
+
+        Play();
+    }
+
+    public void PlayAdvanced()
+    {
+        PlayerPrefs.SetInt("MinesweeperGameMode", 3);
+
+        PlayerPrefs.SetInt("MinesweeperWidth", 24);
+        PlayerPrefs.SetInt("MinesweeperHeight", 20);
+        PlayerPrefs.SetInt("MinesweeperMines", 99);
+
+        Play();
+    }
+
+    public void PlayCustom()
+    {
+        PlayerPrefs.SetInt("MinesweeperGameMode", 0);
+
+        PlayerPrefs.SetInt("MinesweeperWidth", customWidth);
+        PlayerPrefs.SetInt("MinesweeperHeight", customHeight);
+        PlayerPrefs.SetInt("MinesweeperMines", customMines);
+
+        Play();
+    }
+
     private void SetupStats()
     {
+        if (!PlayerPrefs.HasKey("MinesweeperBestBeginnerTime"))
+        {
+            PlayerPrefs.SetInt("MinesweeperBestBeginnerTime", 999);
+        }
+        if (!PlayerPrefs.HasKey("MinesweeperBestStandardTime"))
+        {
+            PlayerPrefs.SetInt("MinesweeperBestStandardTime", 999);
+        }
+        if (!PlayerPrefs.HasKey("MinesweeperBestAdvancedTime"))
+        {
+            PlayerPrefs.SetInt("MinesweeperBestAdvancedTime", 999);
+        }
 
+        if (!PlayerPrefs.HasKey("MinesweeperGameMode"))
+        {
+            PlayerPrefs.SetInt("MinesweeperGameMode", 2);
+        }
+
+        if (!PlayerPrefs.HasKey("MinesweeperWidth"))
+        {
+            PlayerPrefs.SetInt("MinesweeperWidth", 16);
+        }
+        if (!PlayerPrefs.HasKey("MinesweeperHeight"))
+        {
+            PlayerPrefs.SetInt("MinesweeperHeight", 16);
+        }
+        if (!PlayerPrefs.HasKey("MinesweeperMines"))
+        {
+            PlayerPrefs.SetInt("MinesweeperMines", 40);
+        }
+
+        beginnerTime.text = "Beginner: " + PlayerPrefs.GetInt("MinesweeperBestBeginnerTime").ToString();
+        standardTime.text = "Standard: " + PlayerPrefs.GetInt("MinesweeperBestStandardTime").ToString();
+        advancedTime.text = "Advanced: " + PlayerPrefs.GetInt("MinesweeperBestAdvancedTime").ToString();
     }
 
     public void DeleteStats()
@@ -77,5 +177,43 @@ public class MenuManager : MonoBehaviour
         SetupStats();
 
         EnableHomePanel();
+    }
+
+    public void UpdateWidthValue(float val)
+    {
+        customWidth = (int)val;
+
+        widthLabel.text = "Width: " + val.ToString();
+
+        UpdateMaxMinesSlider();
+    }
+
+    public void UpdateHeightValue(float val)
+    {
+        customHeight = (int)val;
+
+        heightLabel.text = "Height: " + val.ToString();
+
+        UpdateMaxMinesSlider();
+    }
+
+    public void UpdateMinesValue(float val)
+    {
+        customMines = (int)val;
+
+        minesLabel.text = "Mines: " + val.ToString();
+    }
+
+    private void UpdateMaxMinesSlider()
+    {
+        int maxMines = customHeight * customWidth;
+        minesSlider.maxValue = maxMines;
+
+        if (customMines > maxMines)
+        {
+            customMines = maxMines;
+        }
+
+        maxMinesText.text = maxMines.ToString();
     }
 }
