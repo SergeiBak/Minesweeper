@@ -16,6 +16,8 @@ public class GameManager : MonoBehaviour
     private float borderThickness = 0.5f;
     [SerializeField]
     private GameObject background;
+    [SerializeField]
+    private GameObject backgroundTop;
 
     [SerializeField]
     private GameObject mineCounterBG;
@@ -397,6 +399,9 @@ public class GameManager : MonoBehaviour
     {
         background.transform.position = new Vector3(width / 2f, height / 2f, 0f); // making sure background is aligned with board
         background.transform.localScale = new Vector3(width + (borderThickness * 2), height + (borderThickness * 2), 1);
+
+        backgroundTop.transform.position = new Vector3(width / 2f, height + 1.5f, 0f); // making sure background top is aligned with top of board
+        backgroundTop.transform.localScale = new Vector3(width + (borderThickness * 2), 2, 1);
     }
 
     private void SetupUI()
