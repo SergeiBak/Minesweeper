@@ -34,6 +34,15 @@ public class GameManager : MonoBehaviour
     private GameObject timerBG;
     [SerializeField]
     private RectTransform timerCounter;
+    private int time = 0;
+    private float nextTimeIncrement = 0f;
+
+    [SerializeField]
+    private Text timeText1;
+    [SerializeField]
+    private Text timeText2;
+    [SerializeField]
+    private Text timeText3;
 
     private RectTransform canvasRectT;
 
@@ -92,6 +101,15 @@ public class GameManager : MonoBehaviour
             else if (Input.GetMouseButtonDown(2)) // reveal all tiles around number tile if equal number of mines are flagged
             {
                 AutoFillSurroundingCells();
+            }
+
+            nextTimeIncrement += Time.deltaTime;
+
+            if (time < 999 && nextTimeIncrement >= 1f) // increment timer if it hasn't reached max yet
+            {
+                nextTimeIncrement = 0f;
+                time++;
+                UpdateTimeCounter();
             }
         }
     }
@@ -321,6 +339,7 @@ public class GameManager : MonoBehaviour
         state = new Cell[width, height];
         gameOver = false;
         flagsPlaced = 0;
+        time = 0;
 
         GenerateCells();
         // GenerateMines();
@@ -360,6 +379,7 @@ public class GameManager : MonoBehaviour
         UpdateMineCounter();
 
         SetupTimeCounter();
+        UpdateTimeCounter();
     }
 
     private void SetupMineCounter()
@@ -407,6 +427,22 @@ public class GameManager : MonoBehaviour
         {
             mineText2.text = (minesLeft / 10).ToString(); // 10s place
             mineText3.text = 0.ToString(); // 100s place
+        }
+    }
+
+    private void UpdateTimeCounter()
+    {
+        timeText1.text = (time % 10).ToString(); // 1s place
+
+        if ((time / 10) >= 10)
+        {
+            timeText3.text = ((time / 10) / 10).ToString(); // 100s place
+            timeText2.text = ((time / 10) % 10).ToString(); // 10s place
+        }
+        else
+        {
+            timeText2.text = (time / 10).ToString(); // 10s place
+            timeText3.text = 0.ToString(); // 100s place
         }
     }
 

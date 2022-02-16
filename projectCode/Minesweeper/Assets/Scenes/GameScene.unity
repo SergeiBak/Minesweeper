@@ -518,9 +518,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1db8a50bc0d4c0c47b06983eb6fb7e91, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  width: 16
-  height: 16
-  mineCount: 32
+  width: 9
+  height: 9
+  mineCount: 1
   borderThickness: 0.5
   background: {fileID: 1717559334}
   mineCounterBG: {fileID: 621445225}
@@ -530,6 +530,9 @@ MonoBehaviour:
   mineText3: {fileID: 122468691}
   timerBG: {fileID: 523000861}
   timerCounter: {fileID: 2085876942}
+  timeText1: {fileID: 699137723}
+  timeText2: {fileID: 1207119258}
+  timeText3: {fileID: 698787988}
 --- !u!1 &519420028
 GameObject:
   m_ObjectHideFlags: 0
