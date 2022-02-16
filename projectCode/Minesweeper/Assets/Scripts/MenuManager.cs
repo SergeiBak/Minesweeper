@@ -28,6 +28,7 @@ public class MenuManager : MonoBehaviour
     {
         homePanel.SetActive(true);
         playPanel.SetActive(false);
+        customPanel.SetActive(false);
         statsPanel.SetActive(false);
         confirmationPanel.SetActive(false);
     }
@@ -55,7 +56,7 @@ public class MenuManager : MonoBehaviour
 
     public void EnableConfirmationPanel()
     {
-        statsPanel.SetActive(false);
+        homePanel.SetActive(false);
         confirmationPanel.SetActive(true);
     }
 
@@ -67,5 +68,14 @@ public class MenuManager : MonoBehaviour
     private void SetupStats()
     {
 
+    }
+
+    public void DeleteStats()
+    {
+        PlayerPrefs.DeleteAll();
+
+        SetupStats();
+
+        EnableHomePanel();
     }
 }
