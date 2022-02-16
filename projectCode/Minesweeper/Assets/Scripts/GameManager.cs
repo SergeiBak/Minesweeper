@@ -238,6 +238,12 @@ public class GameManager : MonoBehaviour
             return;
         }
 
+        if (cell.flagged)
+        {
+            flagsPlaced--;
+            UpdateMineCounter();
+        }
+
         cell.revealed = true;
         state[cell.position.x, cell.position.y] = cell;
 
