@@ -202,11 +202,17 @@ public class MenuManager : MonoBehaviour
         customMines = (int)val;
 
         minesLabel.text = "Mines: " + val.ToString();
+
+        UpdateMaxMinesSlider();
     }
 
     private void UpdateMaxMinesSlider()
     {
-        int maxMines = customHeight * customWidth;
+        int maxMines = (customHeight * customWidth) - 9;
+        if (maxMines < 0)
+        {
+            maxMines = 0;
+        }
         minesSlider.maxValue = maxMines;
 
         if (customMines > maxMines)

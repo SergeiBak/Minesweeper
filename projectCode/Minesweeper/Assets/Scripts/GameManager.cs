@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
 {
@@ -90,6 +91,10 @@ public class GameManager : MonoBehaviour
         normalMineText1Pos = mineText1.rectTransform.anchoredPosition;
         normalMineText2Pos = mineText2.rectTransform.anchoredPosition;
         normalMineText3Pos = mineText3.rectTransform.anchoredPosition;
+
+        width = PlayerPrefs.GetInt("MinesweeperWidth");
+        height = PlayerPrefs.GetInt("MinesweeperHeight");
+        mineCount = PlayerPrefs.GetInt("MinesweeperMines");
     }
 
     private void Start()
@@ -102,6 +107,10 @@ public class GameManager : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.R))
         {
             NewGame();
+        }
+        else if (Input.GetKeyDown(KeyCode.M))
+        {
+            SceneManager.LoadScene("MenuScene");
         }
 
         if (!gameOver)
