@@ -25,10 +25,19 @@ public class GameManager : MonoBehaviour
 
     [SerializeField]
     private Text mineText1;
+    private Vector3 normalMineText1Pos;
+    [SerializeField]
+    private RectTransform offsetMineText1Pos;
     [SerializeField]
     private Text mineText2;
+    private Vector3 normalMineText2Pos;
+    [SerializeField]
+    private RectTransform offsetMineText2Pos;
     [SerializeField]
     private Text mineText3;
+    private Vector3 normalMineText3Pos;
+    [SerializeField]
+    private RectTransform offsetMineText3Pos;
 
     [SerializeField]
     private GameObject timerBG;
@@ -39,10 +48,19 @@ public class GameManager : MonoBehaviour
 
     [SerializeField]
     private Text timeText1;
+    private Vector3 normalTimeText1Pos;
+    [SerializeField]
+    private RectTransform offsetTimeText1Pos;
     [SerializeField]
     private Text timeText2;
+    private Vector3 normalTimeText2Pos;
+    [SerializeField]
+    private RectTransform offsetTimeText2Pos;
     [SerializeField]
     private Text timeText3;
+    private Vector3 normalTimeText3Pos;
+    [SerializeField]
+    private RectTransform offsetTimeText3Pos;
 
     private RectTransform canvasRectT;
 
@@ -62,6 +80,14 @@ public class GameManager : MonoBehaviour
         board = GetComponentInChildren<Board>();
 
         canvasRectT = FindObjectOfType<Canvas>().GetComponent<RectTransform>();
+
+        normalTimeText1Pos = timeText1.rectTransform.anchoredPosition;
+        normalTimeText2Pos = timeText2.rectTransform.anchoredPosition;
+        normalTimeText3Pos = timeText3.rectTransform.anchoredPosition;
+
+        normalMineText1Pos = mineText1.rectTransform.anchoredPosition;
+        normalMineText2Pos = mineText2.rectTransform.anchoredPosition;
+        normalMineText3Pos = mineText3.rectTransform.anchoredPosition;
     }
 
     private void Start()
@@ -417,15 +443,49 @@ public class GameManager : MonoBehaviour
         int minesLeft = mineCount - flagsPlaced;
 
         mineText1.text = (minesLeft % 10).ToString(); // 1s place
+        if ((minesLeft % 10) == 1) // offset when value is equal to 1 - needed because font doesn't line up otherwise
+        {
+            mineText1.rectTransform.anchoredPosition = offsetMineText1Pos.anchoredPosition;
+        }
+        else
+        {
+            mineText1.rectTransform.anchoredPosition = normalMineText1Pos;
+        }
 
         if ((minesLeft / 10) >= 10)
         {
             mineText3.text = ((minesLeft / 10) / 10).ToString(); // 100s place
+            if (((minesLeft / 10) / 10) == 1) // offset when value is equal to 1 - needed because font doesn't line up otherwise
+            {
+                mineText3.rectTransform.anchoredPosition = offsetMineText3Pos.anchoredPosition;
+            }
+            else
+            {
+                mineText3.rectTransform.anchoredPosition = normalMineText3Pos;
+            }
+
             mineText2.text = ((minesLeft / 10) % 10).ToString(); // 10s place
+            if (((minesLeft / 10) % 10) == 1) // offset when value is equal to 1 - needed because font doesn't line up otherwise
+            {
+                mineText2.rectTransform.anchoredPosition = offsetMineText2Pos.anchoredPosition;
+            }
+            else
+            {
+                mineText2.rectTransform.anchoredPosition = normalMineText2Pos;
+            }
         }
         else
         {
             mineText2.text = (minesLeft / 10).ToString(); // 10s place
+            if ((minesLeft / 10) == 1) // offset when value is equal to 1 - needed because font doesn't line up otherwise
+            {
+                mineText2.rectTransform.anchoredPosition = offsetMineText2Pos.anchoredPosition;
+            }
+            else
+            {
+                mineText2.rectTransform.anchoredPosition = normalMineText2Pos;
+            }
+
             mineText3.text = 0.ToString(); // 100s place
         }
     }
@@ -433,15 +493,49 @@ public class GameManager : MonoBehaviour
     private void UpdateTimeCounter()
     {
         timeText1.text = (time % 10).ToString(); // 1s place
+        if ((time % 10) == 1) // offset when value is equal to 1 - needed because font doesn't line up otherwise
+        {
+            timeText1.rectTransform.anchoredPosition = offsetTimeText1Pos.anchoredPosition;
+        }
+        else
+        {
+            timeText1.rectTransform.anchoredPosition = normalTimeText1Pos;
+        }
 
         if ((time / 10) >= 10)
         {
             timeText3.text = ((time / 10) / 10).ToString(); // 100s place
+            if (((time / 10) / 10) == 1) // offset when value is equal to 1 - needed because font doesn't line up otherwise
+            {
+                timeText3.rectTransform.anchoredPosition = offsetTimeText3Pos.anchoredPosition;
+            }
+            else
+            {
+                timeText3.rectTransform.anchoredPosition = normalTimeText3Pos;
+            }
+
             timeText2.text = ((time / 10) % 10).ToString(); // 10s place
+            if (((time / 10) % 10) == 1) // offset when value is equal to 1 - needed because font doesn't line up otherwise
+            {
+                timeText2.rectTransform.anchoredPosition = offsetTimeText2Pos.anchoredPosition;
+            }
+            else
+            {
+                timeText2.rectTransform.anchoredPosition = normalTimeText2Pos;
+            }
         }
         else
         {
             timeText2.text = (time / 10).ToString(); // 10s place
+            if ((time / 10) == 1) // offset when value is equal to 1 - needed because font doesn't line up otherwise
+            {
+                timeText2.rectTransform.anchoredPosition = offsetTimeText2Pos.anchoredPosition;
+            }
+            else
+            {
+                timeText2.rectTransform.anchoredPosition = normalTimeText2Pos;
+            }
+
             timeText3.text = 0.ToString(); // 100s place
         }
     }
