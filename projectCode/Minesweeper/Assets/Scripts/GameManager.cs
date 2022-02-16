@@ -21,6 +21,14 @@ public class GameManager : MonoBehaviour
     private GameObject mineCounterBG;
     [SerializeField]
     private RectTransform mineCounter;
+    private int flagsPlaced = 0;
+
+    [SerializeField]
+    private Text mineText1;
+    [SerializeField]
+    private Text mineText2;
+    [SerializeField]
+    private Text mineText3;
 
     [SerializeField]
     private GameObject timerBG;
@@ -171,9 +179,26 @@ public class GameManager : MonoBehaviour
             return;
         }
 
+        if (!cell.flagged && flagsPlaced >= mineCount) // if equal number of flags are placed to mines, don't allow more cells to be flagged
+        {
+            return;
+        }
+
         cell.flagged = !cell.flagged;
+
+        if (cell.flagged)
+        {
+            flagsPlaced++;
+        }
+        else
+        {
+            flagsPlaced--;
+        }
+
         state[cellPosition.x, cellPosition.y] = cell;
         board.Draw(state);
+
+        UpdateMineCounter();
     }
 
     private void Reveal()
@@ -289,6 +314,7 @@ public class GameManager : MonoBehaviour
     {
         state = new Cell[width, height];
         gameOver = false;
+        flagsPlaced = 0;
 
         GenerateCells();
         // GenerateMines();
@@ -325,6 +351,8 @@ public class GameManager : MonoBehaviour
     private void SetupUI()
     {
         SetupMineCounter();
+        UpdateMineCounter();
+
         SetupTimeCounter();
     }
 
@@ -356,6 +384,24 @@ public class GameManager : MonoBehaviour
 
         // setup scale
         timerCounter.localScale = new Vector3((1f / height) * 16f, (1f / height) * 16f, 1);
+    }
+
+    private void UpdateMineCounter()
+    {
+        int minesLeft = mineCount - flagsPlaced;
+
+        mineText1.text = (minesLeft % 10).ToString(); // 1s place
+
+        if ((minesLeft / 10) >= 10)
+        {
+            mineText3.text = ((minesLeft / 10) / 10).ToString(); // 100s place
+            mineText2.text = ((minesLeft / 10) % 10).ToString(); // 10s place
+        }
+        else
+        {
+            mineText2.text = (minesLeft / 10).ToString(); // 10s place
+            mineText3.text = 0.ToString(); // 100s place
+        }
     }
 
     private void GenerateCells() // Sets all cells in range to empty

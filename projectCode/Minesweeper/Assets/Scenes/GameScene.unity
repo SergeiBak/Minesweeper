@@ -520,11 +520,14 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   width: 16
   height: 16
-  mineCount: 0
+  mineCount: 32
   borderThickness: 0.5
   background: {fileID: 1717559334}
   mineCounterBG: {fileID: 621445225}
   mineCounter: {fileID: 1481619013}
+  mineText1: {fileID: 121782102}
+  mineText2: {fileID: 227472515}
+  mineText3: {fileID: 122468691}
   timerBG: {fileID: 523000861}
   timerCounter: {fileID: 2085876942}
 --- !u!1 &519420028
