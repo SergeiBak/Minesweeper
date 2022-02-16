@@ -369,6 +369,19 @@ public class GameManager : MonoBehaviour
                 }
             }
         }
+
+        if (PlayerPrefs.GetInt("MinesweeperGameMode") == 1 && time < PlayerPrefs.GetInt("MinesweeperBestBeginnerTime"))
+        {
+            PlayerPrefs.SetInt("MinesweeperBestBeginnerTime", time);
+        }
+        if (PlayerPrefs.GetInt("MinesweeperGameMode") == 2 && time < PlayerPrefs.GetInt("MinesweeperBestStandardTime"))
+        {
+            PlayerPrefs.SetInt("MinesweeperBestStandardTime", time);
+        }
+        if (PlayerPrefs.GetInt("MinesweeperGameMode") == 3 && time < PlayerPrefs.GetInt("MinesweeperBestAdvancedTime"))
+        {
+            PlayerPrefs.SetInt("MinesweeperBestAdvancedTime", time);
+        }
     }
 
     private void NewGame()
