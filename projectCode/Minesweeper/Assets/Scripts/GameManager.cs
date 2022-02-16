@@ -492,6 +492,7 @@ public class GameManager : MonoBehaviour
             }
 
             mineText3.text = 0.ToString(); // 100s place
+            mineText3.rectTransform.anchoredPosition = normalMineText3Pos;
         }
     }
 
@@ -542,6 +543,7 @@ public class GameManager : MonoBehaviour
             }
 
             timeText3.text = 0.ToString(); // 100s place
+            timeText3.rectTransform.anchoredPosition = normalTimeText3Pos;
         }
     }
 
