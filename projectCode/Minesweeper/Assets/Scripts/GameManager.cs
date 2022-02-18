@@ -65,6 +65,11 @@ public class GameManager : MonoBehaviour
     [SerializeField]
     private RectTransform offsetTimeText3Pos;
 
+    [SerializeField]
+    private GameObject victoryEffect;
+    [SerializeField]
+    private GameObject loseEffect;
+
     private RectTransform canvasRectT;
 
     private Board board;
@@ -337,6 +342,8 @@ public class GameManager : MonoBehaviour
                 }
             }
         }
+
+        SpawnLoseEffect();
     }
 
     private void CheckWinCondition()
@@ -382,6 +389,8 @@ public class GameManager : MonoBehaviour
         {
             PlayerPrefs.SetInt("MinesweeperBestAdvancedTime", time);
         }
+
+        SpawnVictoryEffect();
     }
 
     private void NewGame()
@@ -424,6 +433,29 @@ public class GameManager : MonoBehaviour
 
         backgroundTop.transform.position = new Vector3(width / 2f, height + 1.5f, 0f); // making sure background top is aligned with top of board
         backgroundTop.transform.localScale = new Vector3(width + (borderThickness * 2), 2, 1);
+    }
+
+    private void SpawnVictoryEffect()
+    {
+        Vector2 spawnPos = backgroundTop.transform.position;
+        spawnPos.y += 1;
+
+        GameObject victoryPS = Instantiate(victoryEffect, spawnPos, Quaternion.identity);
+
+        float scaleAdjustment = height / 10f;
+
+        victoryPS.transform.localScale = new Vector3(scaleAdjustment, scaleAdjustment, 1);
+    }
+
+    private void SpawnLoseEffect()
+    {
+        Vector2 spawnPos = background.transform.position;
+
+        GameObject losePS = Instantiate(loseEffect, spawnPos, Quaternion.identity);
+
+        float scaleAdjustment = height / 16f;
+
+        losePS.transform.localScale = new Vector3(scaleAdjustment, scaleAdjustment, 1);
     }
 
     private void SetupUI()

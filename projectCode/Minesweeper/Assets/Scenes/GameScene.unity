@@ -584,6 +584,8 @@ MonoBehaviour:
   offsetTimeText2Pos: {fileID: 301019898}
   timeText3: {fileID: 698787988}
   offsetTimeText3Pos: {fileID: 747143053}
+  victoryEffect: {fileID: 3541037405174464586, guid: 1328385294952bf4daa4409ac6aa78ae, type: 3}
+  loseEffect: {fileID: 2797457587877441112, guid: 43984c6659d2ba64b9cb6995249ab111, type: 3}
 --- !u!1 &519420028
 GameObject:
   m_ObjectHideFlags: 0
