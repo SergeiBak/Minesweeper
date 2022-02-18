@@ -15,7 +15,7 @@ This project is a recreation of the classic puzzle game known as Minesweeper, wi
 Minesweeper consists of a grid with a number of hidden mines scattered randomly throughout. You can reveal covered cells with a left mouse click, or right click them to flag them if you believe a mine lies underneath. Number cells display the amount of mines immediately surrounding said cell (If you placed flags on where you believe mines are located around the cell, you can click the mouse scroll wheel onto the number cell to automatically flip all the non-flagged cells around it). Be careful not to reveal a mine or you lose! To win the game, you must reveal all non-mine cells on the board.
 
 ## Test The Project!
-In order to play this version of Minesweeper, follow the [link](https://sergeibak.github.io/PersonalWebsite/pong.html) to a in-browser WebGL build (No download required!).
+In order to play this version of Minesweeper, follow the [link](https://sergeibak.github.io/PersonalWebsite/Minesweeper.html) to a in-browser WebGL build (No download required!).
 
 ## Code
 A brief description of all of the classes is as follows:
